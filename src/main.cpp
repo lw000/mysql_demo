@@ -26,7 +26,7 @@ static void* thread_one_action(void *arg) {
 	SQLConnPool::CONNECT conn;
 	{
 		clock_t t = clock();
-		int times = 10;
+		int times = 1;
 		for (size_t i = 0; i < times; i++) {
 			SQLQuotationTable sqlQuotation(&conn);
 			{
@@ -57,7 +57,7 @@ static void* thread_one_action(void *arg) {
 	}
 
 	{
-		int times = 1000;
+		int times = 1;
 		clock_t t = clock();
 
 		SQLQuotationTable sqlQuotation(&conn);
@@ -118,18 +118,25 @@ static void* thread_one_action(void *arg) {
 }
 
 int main(int argc, char** argv) {
-	if (argc < 2)
-		return 0;
+//	if (argc < 2)
+//		return 0;
 
 	SocketInit sInit;
 
 	SQLConnPool* connPool = SQLConnPool::getInstance();
 
 	do {
+//#if 0
+//		int r = connPool->createSqlConnPool("localhost", "lw", "qazxsw123", "app_project");
+//#else
+//		int r = connPool->createConnPool("tcp://localhost:3306", "lw",
+//				"qazxsw123", "app_project");
+//#endif
+
 #if 0
-		int r = connPool->createSqlConnPool("localhost", "lw", "qazxsw123", "app_project");
+		int r = connPool->createSqlConnPool("192.168.50.26", "lw", "qazxsw123", "app_project");
 #else
-		int r = connPool->createConnPool("tcp://localhost:3306", "lw",
+		int r = connPool->createConnPool("tcp://192.168.50.26:3306", "lw",
 				"qazxsw123", "app_project");
 #endif
 
@@ -152,33 +159,6 @@ int main(int argc, char** argv) {
 				config.work_day = res->getInt(5);
 				config.print();
 			}
-// 				SQLTableConfig sqlConfig(conn);
-// 				sqlConfig.reset();
-// 				sqlConfig.createStatement();
-// 				sqlConfig.executeQuery("SELECT * FROM config;", [&sqlConfig](sql::ResultSet* res)
-// 				{
-// 					uint32_t  c0 = res->findColumn("proportion"); 
-// 					uint32_t  c1 = res->findColumn("meal_supplement");
-// 					uint32_t  c2 = res->findColumn("overtime");
-// 					uint32_t  c3 = res->findColumn("finance");
-// 					uint32_t  c4 = res->findColumn("work_day");
-// 
-// 					int row = res->rowsCount();
-// 
-// 					while (res->next())
-// 					{
-// 						sqlConfig.config.proportion = res->getDouble(1);
-// 						sqlConfig.config.meal_supplement = res->getDouble(2);
-// 						sqlConfig.config.overtime = res->getDouble(3);
-// 						sqlConfig.config.finance = res->getDouble(4);
-// 						sqlConfig.config.work_day = res->getInt(5);
-// 						sqlConfig.config.print();
-// 					}
-// 				},
-// 					[](const std::string & error)
-// 				{
-// 
-// 				});
 			connPool->recycleConnection(conn);
 		}
 
@@ -217,7 +197,6 @@ int main(int argc, char** argv) {
 				pstmt->setInt(1, 2);
 				user.executeQuery([](sql::ResultSet* res)
 				{
-
 				}, [](const std::string & error)
 				{
 					printf("# error: %s", error.c_str());
@@ -226,11 +205,8 @@ int main(int argc, char** argv) {
 
 			{
 				user.reset();
-				sql::PreparedStatement* pstmt =
-						user.prepareStatement(
-								"UPDATE user \
-																			SET sex = ? \
-																			WHERE name = ?;");
+				sql::PreparedStatement* pstmt = user.prepareStatement(
+						"UPDATE user  SET sex = ? WHERE name = ?;");
 				pstmt->setInt(1, 1);
 				pstmt->setString(2, ("11111111"));
 				user.executeQuery([](sql::ResultSet* res)
@@ -254,7 +230,7 @@ int main(int argc, char** argv) {
 
 				int status;
 				status = pthread_create(&thread_one, NULL, thread_one_action,
-						NULL);
+				NULL);
 				if (status != 0)
 					throw std::runtime_error("Thread creation has failed");
 
@@ -280,11 +256,9 @@ int main(int argc, char** argv) {
 			//	throw std::runtime_error("joining thread has failed");
 			//delete param;
 		}
-
 	} while (0);
 
 	int c = getchar();
-	c = getchar();
 
 	return 0;
 }

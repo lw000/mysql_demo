@@ -8,6 +8,9 @@
 class BaseTable
 {
 public:
+	virtual ~BaseTable() {}
+
+public:
 	virtual void reset() = 0;
 
 public:
@@ -40,7 +43,7 @@ public:
 
 	virtual void print() override
 	{
-		printf("# proportion : %f, meal_supplement : %f, overtime : %f, finance : %f, work_day : %d\n",
+		printf("# proportion : %.2f, meal_supplement : %.2f, overtime : %.2f, finance : %.2f, work_day : %d\n",
 			this->proportion, this->meal_supplement, this->overtime, this->finance, this->work_day);
 	}
 };
