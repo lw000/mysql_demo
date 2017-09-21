@@ -57,15 +57,14 @@ static void* thread_one_action(void *arg) {
 	}
 
 	{
-		int times = 1;
+		int times = 1000;
 		clock_t t = clock();
 
 		SQLQuotationTable sqlQuotation(&conn);
 		sql::PreparedStatement* pstmt = sqlQuotation.prepareStatement(
 				"INSERT INTO quotation VALUES(?,?,?,?);");
-		pstmt->setString(1, "");
-		pstmt->setString(2, "");
-		pstmt->setDateTime(4, "2017-06-21 00:00:00");
+		pstmt->setString(1, "祈宜鸟直播 - 新增功能");
+		pstmt->setString(2, "刘玉婷");
 
 		for (int i = 0; i < times; i++) {
 #ifdef _WIN32
@@ -89,16 +88,23 @@ static void* thread_one_action(void *arg) {
 #else
 			{
 				uuid_t uu;
-				int i;
 				uuid_generate(uu);
-
-				for (i = 0; i < 16; i++) {
-					printf("%02X-", uu[i]);
-				}
-				printf("\n");
+//				for (int i = 0; i < 16; i++) {
+//					printf("%02X-", uu[i]);
+//				}
+//				printf("\n");
+//				std::string str_uuid((char*)uu, 16);
+				pstmt->setString(3, "705817B8-F9ED-4aed-898F-2D8FF9B97068");
 			}
 
 #endif // _WIN32
+			time_t t = time(NULL);
+			struct tm* tt = localtime(&t);
+			char tm_buff[64];
+			sprintf(tm_buff, "%d-%d-%d %d:%d:%d", tt->tm_year, tt->tm_wday,
+					tt->tm_yday, tt->tm_hour, tt->tm_min, tt->tm_sec);
+
+			pstmt->setDateTime(4, "2017-06-21 00:00:00");
 
 			sqlQuotation.executeQuery([&sqlQuotation](sql::ResultSet* res)
 			{
