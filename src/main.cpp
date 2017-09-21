@@ -20,9 +20,10 @@
 #include "SQLTable.h"
 #include "SQLConnPool.h"
 
-static void* thread_one_action(void *arg);
+static void* thread_select_action(void *arg);
+static void* thread_insert_action(void *arg);
 
-static void* thread_one_action(void *arg) {
+static void* thread_select_action(void *arg) {
 	SQLConnPool::CONNECT conn;
 	{
 		clock_t t = clock();
@@ -56,6 +57,11 @@ static void* thread_one_action(void *arg) {
 				((double) t1 - t) / CLOCKS_PER_SEC);
 	}
 
+	return NULL;
+}
+
+static void* thread_insert_action(void *arg) {
+	SQLConnPool::CONNECT conn;
 	{
 		int times = 1000;
 		clock_t t = clock();
@@ -120,7 +126,8 @@ static void* thread_one_action(void *arg) {
 				((double) t1 - t) / CLOCKS_PER_SEC);
 
 	}
-	return NULL;
+
+	return 0;
 }
 
 int main(int argc, char** argv) {
@@ -266,20 +273,39 @@ int main(int argc, char** argv) {
 
 		{
 			for (int i = 0; i < 1; i++) {
-				pthread_t thread_one;
-
 				/*std::thread st(thread_one_action);
 				 st.join();*/
 
-				int status;
-				status = pthread_create(&thread_one, NULL, thread_one_action,
-				NULL);
-				if (status != 0)
-					throw std::runtime_error("Thread creation has failed");
+				{
+					pthread_t thread_one;
+					int status;
+					status = pthread_create(&thread_one, NULL,
+							thread_select_action,
+							NULL);
+					if (status != 0)
+						throw std::runtime_error("Thread creation has failed");
 
-				status = pthread_detach(thread_one);
-				if (status != 0)
-					throw std::runtime_error("joining thread has failed");
+					status = pthread_detach(thread_one);
+					if (status != 0) {
+						throw std::runtime_error("joining thread has failed");
+					}
+				}
+
+				{
+					pthread_t thread_one;
+					int status;
+					status = pthread_create(&thread_one, NULL,
+							thread_insert_action,
+							NULL);
+					if (status != 0)
+						throw std::runtime_error("Thread creation has failed");
+
+					status = pthread_detach(thread_one);
+					if (status != 0) {
+						throw std::runtime_error("joining thread has failed");
+					}
+				}
+
 			}
 
 			//pthread_t thread_one;
