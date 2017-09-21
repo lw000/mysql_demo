@@ -170,7 +170,16 @@ int main(int argc, char** argv) {
 				user.createStatement();
 				user.executeQuery("SELECT * FROM user;", [](sql::ResultSet* res)
 				{
-
+					UserTable user;
+					while (res->next()) {
+						user.name = res->getString(1);
+						user.sex = res->getInt(2);
+						user.position = res->getInt(3);
+						user.wages = res->getDouble(4);
+						user.average_wages = res->getDouble(5);
+						user.department = res->getInt(6);
+						user.print();
+					}
 				}, [](const std::string & error)
 				{
 
@@ -183,7 +192,16 @@ int main(int argc, char** argv) {
 				user.executeQuery("SELECT * FROM user WHERE id=1;",
 						[](sql::ResultSet* res)
 						{
-
+							UserTable user;
+							while (res->next()) {
+								user.name = res->getString(1);
+								user.sex = res->getInt(2);
+								user.position = res->getInt(3);
+								user.wages = res->getDouble(4);
+								user.average_wages = res->getDouble(5);
+								user.department = res->getInt(6);
+								user.print();
+							}
 						}, [](const std::string & error)
 						{
 							printf("# error: %s", error.c_str());
@@ -197,6 +215,16 @@ int main(int argc, char** argv) {
 				pstmt->setInt(1, 2);
 				user.executeQuery([](sql::ResultSet* res)
 				{
+					UserTable user;
+					while (res->next()) {
+						user.name = res->getString(1);
+						user.sex = res->getInt(2);
+						user.position = res->getInt(3);
+						user.wages = res->getDouble(4);
+						user.average_wages = res->getDouble(5);
+						user.department = res->getInt(6);
+						user.print();
+					}
 				}, [](const std::string & error)
 				{
 					printf("# error: %s", error.c_str());
@@ -208,10 +236,19 @@ int main(int argc, char** argv) {
 				sql::PreparedStatement* pstmt = user.prepareStatement(
 						"UPDATE user  SET sex = ? WHERE name = ?;");
 				pstmt->setInt(1, 1);
-				pstmt->setString(2, ("11111111"));
+				pstmt->setString(2, ("李伟"));
 				user.executeQuery([](sql::ResultSet* res)
 				{
-
+					UserTable user;
+					while (res->next()) {
+						user.name = res->getString(1);
+						user.sex = res->getInt(2);
+						user.position = res->getInt(3);
+						user.wages = res->getDouble(4);
+						user.average_wages = res->getDouble(5);
+						user.department = res->getInt(6);
+						user.print();
+					}
 				}, [](const std::string & error)
 				{
 					printf("# error: %s", error.c_str());
