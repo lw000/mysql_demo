@@ -10,6 +10,7 @@
 #include <pthread.h>
 
 #include "utils.h"
+#include "net.h"
 
 #include "SQLTable.h"
 #include "SQLConnPool.h"
@@ -21,7 +22,7 @@ static void* thread_select_action(void *arg) {
 	SQLConnPool::CONNECT conn;
 	{
 		clock_t t = clock();
-		int times = 1000;
+		int times = 10;
 		for (size_t i = 0; i < times; i++) {
 			SQLQuotationTable sqlQuotation(&conn);
 			{
@@ -57,7 +58,7 @@ static void* thread_select_action(void *arg) {
 static void* thread_insert_action(void *arg) {
 	SQLConnPool::CONNECT conn;
 	{
-		int times = 1000;
+		int times = 10;
 
 		clock_t t = clock();
 
@@ -66,15 +67,15 @@ static void* thread_insert_action(void *arg) {
 				"INSERT INTO quotation VALUES(?,?,?,?);");
 
 		for (int i = 0; i < times; i++) {
-			pstmt->setString(1, "祈宜鸟直播 - 新增功能");
-			pstmt->setString(2, "刘玉婷");
-			std::string uuid = make_uuidstring();
-			pstmt->setString(3, uuid.c_str());
-			time_t t = time(NULL);
-			struct tm* tt = localtime(&t);
-			char tm_buff[64];
-			sprintf(tm_buff, "%d-%d-%d %d:%d:%d", tt->tm_year, tt->tm_wday,
-					tt->tm_yday, tt->tm_hour, tt->tm_min, tt->tm_sec);
+			pstmt->setString(1, "new bunisses");
+			pstmt->setString(2, "liwei");
+ 			std::string uuid = make_uuidstring();
+ 			pstmt->setString(3, uuid.c_str());
+ 			time_t t = time(NULL);
+ 			struct tm* tt = localtime(&t);
+ 			char tm_buff[64];
+ 			sprintf(tm_buff, "%d-%d-%d %d:%d:%d", tt->tm_year, tt->tm_wday,
+ 					tt->tm_yday, tt->tm_hour, tt->tm_min, tt->tm_sec);
 
 			pstmt->setDateTime(4, "2017-06-21 00:00:00");
 
@@ -105,19 +106,24 @@ int main(int argc, char** argv) {
 	SQLConnPool* connPool = SQLConnPool::getInstance();
 
 	do {
-//#if 0
-//		int r = connPool->createSqlConnPool("localhost", "lw", "qazxsw123", "app_project");
-//#else
-//		int r = connPool->createConnPool("tcp://localhost:3306", "lw",
-//				"qazxsw123", "app_project");
-//#endif
+#ifdef _WIN32
+	#if 0
+			int r = connPool->createSqlConnPool("localhost", "lw", "qazxsw123", "app_project");
+	#else
+			int r = connPool->createConnPool("tcp://localhost:3306", "lw",
+					"qazxsw123", "app_project");
+	#endif
 
+#else
 #if 0
 		int r = connPool->createSqlConnPool("192.168.50.26", "lw", "qazxsw123", "app_project");
 #else
 		int r = connPool->createConnPool("tcp://192.168.50.26:3306", "lw",
-				"qazxsw123", "app_project");
+			"qazxsw123", "app_project");
 #endif
+#endif
+
+
 
 		if (r != 0)
 			break;
