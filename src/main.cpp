@@ -1,12 +1,6 @@
 // SQLServer.cpp : Defines the entry point for the console application.
 //
 
-#if defined(WIN32) || defined(_WIN32)
-#include <winsock2.h>
-#else
-#include <uuid/uuid.h>
-#endif // WIN32
-
 #include <stdio.h>
 #include <iostream>
 #include <signal.h>
@@ -27,7 +21,7 @@ static void* thread_select_action(void *arg) {
 	SQLConnPool::CONNECT conn;
 	{
 		clock_t t = clock();
-		int times = 1;
+		int times = 1000;
 		for (size_t i = 0; i < times; i++) {
 			SQLQuotationTable sqlQuotation(&conn);
 			{
@@ -37,15 +31,15 @@ static void* thread_select_action(void *arg) {
 						[&sqlQuotation](sql::ResultSet* res)
 						{
 							int row = res->rowsCount();
-							while (res->next())
-							{
-								QuotationTable quotation;
-								quotation.name = res->getString("name").c_str();
-								quotation.sale_name = res->getString("sale_name").c_str();
-								quotation.quotation_number = res->getString("quotation_number").c_str();
-								quotation.create_time = res->getString("create_time").c_str();
-								sqlQuotation.vtQuotation.push_back(quotation);
-							}
+//							while (res->next())
+//							{
+//								QuotationTable quotation;
+//								quotation.name = res->getString("name").c_str();
+//								quotation.sale_name = res->getString("sale_name").c_str();
+//								quotation.quotation_number = res->getString("quotation_number").c_str();
+//								quotation.create_time = res->getString("create_time").c_str();
+//								sqlQuotation.vtQuotation.push_back(quotation);
+//							}
 						}, [](const std::string & error)
 						{
 							printf("# error: %s", error.c_str());
@@ -73,37 +67,8 @@ static void* thread_insert_action(void *arg) {
 		pstmt->setString(2, "刘玉婷");
 
 		for (int i = 0; i < times; i++) {
-#ifdef _WIN32
-#define GUID_LEN 64
-			char buffer[GUID_LEN] = {0};
-			GUID guid;
-
-			if (CoCreateGuid(&guid))
-			{
-				fprintf(stderr, "create guid error\n");
-			}
-
-			_snprintf(buffer, sizeof(buffer),
-					"%08X-%04X-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X",
-					guid.Data1, guid.Data2, guid.Data3,
-					guid.Data4[0], guid.Data4[1], guid.Data4[2],
-					guid.Data4[3], guid.Data4[4], guid.Data4[5],
-					guid.Data4[6], guid.Data4[7]);
-			pstmt->setString(3, G2U(buffer));
-#undef GUID_LEN
-#else
-			{
-				uuid_t uu;
-				uuid_generate(uu);
-//				for (int i = 0; i < 16; i++) {
-//					printf("%02X-", uu[i]);
-//				}
-//				printf("\n");
-//				std::string str_uuid((char*)uu, 16);
-				pstmt->setString(3, "705817B8-F9ED-4aed-898F-2D8FF9B97068");
-			}
-
-#endif // _WIN32
+			std::string uuid = make_uuid();
+			pstmt->setString(3, uuid.c_str());
 			time_t t = time(NULL);
 			struct tm* tt = localtime(&t);
 			char tm_buff[64];
@@ -122,7 +87,7 @@ static void* thread_insert_action(void *arg) {
 		}
 
 		clock_t t1 = clock();
-		printf("select [%d] times: %f \n", times,
+		printf("insert [%d] times: %f \n", times,
 				((double) t1 - t) / CLOCKS_PER_SEC);
 
 	}
@@ -185,12 +150,12 @@ int main(int argc, char** argv) {
 				{
 					UserTable user;
 					while (res->next()) {
-						user.name = res->getString(1);
-						user.sex = res->getInt(2);
-						user.position = res->getInt(3);
-						user.wages = res->getDouble(4);
-						user.average_wages = res->getDouble(5);
-						user.department = res->getInt(6);
+						user.name = res->getString("name");
+						user.sex = res->getInt("sex");
+						user.position = res->getInt("position");
+						user.wages = res->getDouble("wages");
+						user.average_wages = res->getDouble("average_wages");
+						user.department = res->getInt("department");
 						user.print();
 					}
 				}, [](const std::string & error)
