@@ -299,7 +299,7 @@ int main(int argc, char** argv) {
 		}
 	} while (0);
 
-	int c = getchar();
+//	int c = getchar();
 
 	return 0;
 }

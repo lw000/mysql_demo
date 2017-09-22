@@ -28,6 +28,7 @@
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mysqlwarpper/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lw_common/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lw_net/include}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1559834574" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -39,12 +40,13 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1777989672" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool command="g++  -std=c++0x -lpthread `mysql_config --cflags --libs`" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.630921059" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.userobjs.377524502" name="Other objects" superClass="gnu.cpp.link.option.userobjs" useByScannerDiscovery="false" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lw_net/Debug/liblw_net.a}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lw_common/Debug/liblw_common.a}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mysqlwarpper/Debug/libmysqlwarpper.a}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/local/lib/liblog4z.a"/>
 									<listOptionValue builtIn="false" value="/lib64/libuuid.so"/>
 									<listOptionValue builtIn="false" value="/usr/local/mysql/lib/libmysqlclient.a"/>
 									<listOptionValue builtIn="false" value="/usr/local/mysql/lib/libmysqld.a"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mysqlwarpper/Debug/libmysqlwarpper.a}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lw_common/Debug/liblw_common.a}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/local/lib64/libmysqlcppconn-static.a"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.437687567" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
