@@ -58,16 +58,17 @@ static void* thread_insert_action(void *arg) {
 	SQLConnPool::CONNECT conn;
 	{
 		int times = 1000;
+
 		clock_t t = clock();
 
 		SQLQuotationTable sqlQuotation(&conn);
 		sql::PreparedStatement* pstmt = sqlQuotation.prepareStatement(
 				"INSERT INTO quotation VALUES(?,?,?,?);");
-		pstmt->setString(1, "祈宜鸟直播 - 新增功能");
-		pstmt->setString(2, "刘玉婷");
 
 		for (int i = 0; i < times; i++) {
-			std::string uuid = make_uuid();
+			pstmt->setString(1, "祈宜鸟直播 - 新增功能");
+			pstmt->setString(2, "刘玉婷");
+			std::string uuid = make_uuidstring();
 			pstmt->setString(3, uuid.c_str());
 			time_t t = time(NULL);
 			struct tm* tt = localtime(&t);
